@@ -1,0 +1,48 @@
+[flake8]
+# QuickStack Labs - Flake8 Configuration
+
+max-line-length = 120
+max-complexity = 10
+
+# Ignore specific errors/warnings
+ignore =
+    # E203: whitespace before ':' (conflicts with black)
+    E203,
+    # W503: line break before binary operator (conflicts with black)
+    W503,
+    # E501: line too long (black handles this)
+    E501,
+    # F401: imported but unused (sometimes needed for re-exports)
+    # F401
+
+exclude =
+    .git,
+    __pycache__,
+    venv,
+    .venv,
+    env,
+    .env,
+    dist,
+    build,
+    *.egg-info,
+    .pytest_cache,
+    .mypy_cache,
+    migrations,
+    .vscode,
+    .idea
+
+# Per-file ignores
+per-file-ignores =
+    # __init__.py files can have unused imports (for re-exports)
+    __init__.py:F401,F403
+    # Test files can have unused fixtures
+    test_*.py:F811
+
+# Show source code for errors
+show-source = True
+
+# Count errors
+count = True
+
+# Statistics
+statistics = True

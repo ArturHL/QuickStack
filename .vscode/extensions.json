@@ -1,0 +1,69 @@
+{
+  // Extensiones recomendadas para QuickStack Labs
+  "recommendations": [
+    // ============================================
+    // 🔥 ESENCIALES (Instalar primero)
+    // ============================================
+
+    // Python
+    "ms-python.python",                    // Python base
+    "ms-python.vscode-pylance",            // IntelliSense mejorado
+    "ms-python.black-formatter",           // Auto-formatter
+
+    // JavaScript/TypeScript/React
+    "esbenp.prettier-vscode",              // Formatter para JS/TS/JSON/CSS
+    "dbaeumer.vscode-eslint",              // Linter para JS/TS
+    "dsznajder.es7-react-js-snippets",     // React snippets
+
+    // Java
+    "redhat.java",                         // Java language support
+    "vscjava.vscode-java-pack",            // Java extension pack
+    "vscjava.vscode-spring-boot-dashboard", // Spring Boot tools
+
+    // ============================================
+    // 🚀 PRODUCTIVIDAD
+    // ============================================
+
+    "usernamehw.errorlens",                // Muestra errores inline
+    "streetsidesoftware.code-spell-checker", // Spell checker
+    "eamodio.gitlens",                     // Git superpowers
+    "gruntfuggly.todo-tree",               // TODO highlights
+    "wayou.vscode-todo-highlight",         // TODO/FIXME highlight
+
+    // ============================================
+    // 🎨 UI/UX
+    // ============================================
+
+    "pkief.material-icon-theme",           // Iconos bonitos
+    "github.github-vscode-theme",          // GitHub theme (opcional)
+
+    // ============================================
+    // 📦 FORMATOS & LENGUAJES
+    // ============================================
+
+    "redhat.vscode-yaml",                  // YAML support
+    "tamasfe.even-better-toml",            // TOML support
+    "ms-azuretools.vscode-docker",         // Docker support
+
+    // ============================================
+    // 🧪 TESTING & DEBUGGING
+    // ============================================
+
+    "littlefoxteam.vscode-python-test-adapter", // Python test explorer
+    "hbenl.vscode-test-explorer",          // Test explorer UI
+
+    // ============================================
+    // 🔒 SEGURIDAD & CALIDAD
+    // ============================================
+
+    "sourcery.sourcery",                   // Python code quality (opcional)
+    "ms-vscode.vscode-github-issue-notebooks" // GitHub integration
+  ],
+
+  // Extensiones que causan conflictos (no instalar)
+  "unwantedRecommendations": [
+    "ms-python.pylint",                    // Usamos flake8 en su lugar
+    "hookyqr.beautify",                    // Usamos Prettier
+    "ms-vscode.vscode-typescript-tslint-plugin" // TSLint está deprecated
+  ]
+}
