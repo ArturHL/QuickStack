@@ -149,19 +149,22 @@
   ],
 
   // Code Spell Checker
+  "cSpell.language": "en,es",
   "cSpell.words": [
-    "quickstack",
-    "FastAPI",
     "Alembic",
-    "Pydantic",
-    "SQLAlchemy",
-    "uvicorn",
-    "pytest",
-    "psycopg",
     "CORS",
+    "datasource",
+    "FastAPI",
+    "hikari",
     "JWT",
+    "psycopg",
+    "Pydantic",
+    "pytest",
+    "quickstack",
     "RBAC",
+    "SQLAlchemy",
     "TanStack",
+    "uvicorn",
     "Vite"
   ]
 }

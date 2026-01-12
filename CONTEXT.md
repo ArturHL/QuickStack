@@ -2,39 +2,33 @@
 
 ## 🎯 Project Goal
 
-Build a **reusable multi-tenant SaaS architecture** that serves as a foundation for creating multiple SaaS products quickly and securely.
+Build a **modular workflow automation platform** that enables automated business processes through interconnected modules and n8n orchestration.
 
 ## 📖 Background & Motivation
 
 ### Why This Project Exists
 
-1. **Learning Through Building** - Understanding SaaS architecture by designing a complete system
-2. **Portfolio Piece** - Demonstrating system design and architectural thinking
-3. **Reusable Foundation** - Create once, use for multiple products
-4. **Professional Development** - Learning enterprise-grade patterns and practices
+1. **Real Business Need** - Automate repetitive business tasks (expense tracking, order management, financial reporting)
+2. **Learning Through Building** - Understanding modular architecture and enterprise patterns
+3. **Portfolio Piece** - Demonstrating system design and full-stack development
+4. **Scalable Foundation** - Build once, extend easily with new modules
+5. **Solo Developer Friendly** - Architecture designed for maintainability by one person
 
 ### Philosophy
 
-> "Architecture first, code second. Understand before implementing."
+> "Start simple, scale when needed. Build modular, deploy monolithic."
 
-We document and design the entire system before writing code to ensure:
-- Every decision is intentional and justified
-- The architecture is sound and scalable
-- We can explain every component confidently
-- No "mystery code" that we don't understand
+We prioritize:
+- **Simplicity**: One codebase, one database, one deployment
+- **Modularity**: Features organized as independent modules
+- **Automation**: Manual tasks replaced by bots and workflows
+- **Understanding**: Every decision is intentional and documented
 
 ## 🏗️ Current State (January 2026)
 
 ### What We Have
 
-**Phase 1: Planning & Architecture ✅ COMPLETE**
-- ✅ Complete architectural design (README.md)
-- ✅ Detailed implementation blueprint (STRUCTURE.md)
-- ✅ Development environment setup (DEV_SETUP.md)
-- ✅ Project structure (6 empty component directories)
-- ✅ Professional tooling (linters, formatters, VS Code config)
-
-**Phase 2: Core Backend Implementation ✅ MVP DEPLOYED**
+**Phase 1: Foundation ✅ COMPLETE**
 - ✅ Spring Boot 3.5 + Java 17 configured
 - ✅ JWT Authentication (login, register)
 - ✅ Multi-tenant User Management (CRUD)
@@ -45,50 +39,89 @@ We document and design the entire system before writing code to ensure:
 - ✅ CORS Configuration - Securely configured
 - ✅ Security Headers - 6 HTTP headers implemented
 
-**Phase 3: Security Enhancement 🎯 IN PROGRESS (Sprint 1)**
-- ✅ Rate Limiting (Bucket4j Token Bucket)
-- ✅ CORS Configuration (environment-based whitelist)
-- ✅ Security Headers (X-Frame-Options, CSP, HSTS, etc.)
-- ⏳ Input Validation Enhancement
-- ⏳ Error Handling Standardization
-- ⏳ Audit Logging
-- ⏳ Monitoring & Metrics
+**Phase 2: Business Modules 🔄 NEXT**
+- ⏳ Gastos module (expense tracking)
+- ⏳ Pedidos module (order management)
+- ⏳ Finanzas module (financial statements)
+- ⏳ Webhooks for n8n integration
 
-**Phase 4: Product Template & SDK 🔴 NOT STARTED**
-- ⏳ Python SDK - Empty directory ready
-- ⏳ React UI Library - Empty directory ready
-- ⏳ Product Template - Empty directory ready
-
-### Why Are Directories Empty?
-
-**Deliberate Decision**: We want to build incrementally, understanding every line of code.
-
-> "Better to have 0 lines of code we fully understand, than 5000 lines we cannot explain."
-
-This approach allows us to:
-1. Learn each component thoroughly
-2. Make conscious decisions about implementations
-3. Avoid cargo-cult programming
-4. Build confidence through understanding
+**Phase 3: Automation & Frontend 🔴 PLANNED**
+- ⏳ n8n workflows (Telegram bot, scheduled tasks)
+- ⏳ React dashboard (central UI)
+- ⏳ Reports and analytics
 
 ## 🛠️ Technology Stack Decisions
 
-### Core Backend - Java + Spring Boot
-**Why:**
-- ✅ Enterprise-grade stability
+### Backend - Java + Spring Boot
+
+**Decision**: Use Java 17 + Spring Boot 3.x for the entire backend
+
+**Why Java:**
+- ✅ Enterprise-grade stability and performance
 - ✅ Mature authentication/security ecosystem
 - ✅ Strong typing and compile-time safety
 - ✅ Excellent for critical auth services
+- ✅ Single language reduces context switching (solo dev advantage)
+- ✅ Already have `quickstack-core` foundation built
 
-### Product Backends - Python + FastAPI
-**Why:**
-- ✅ Rapid prototyping and development speed
-- ✅ Excellent for AI integration (future)
-- ✅ Type hints with Pydantic
-- ✅ Modern async/await support
-- ✅ Perfect for product-specific logic
+**Why NOT Python (FastAPI):**
+- ❌ Would require porting existing auth code
+- ❌ Adds language context switching overhead
+- ❌ No significant benefit for our use case
+- ❌ Java integrates with n8n just as well (HTTP/JSON)
+
+### Architecture - Modular Monolith
+
+**Decision**: Build as a modular monolith, NOT microservices
+
+**Why Modular Monolith:**
+- ✅ **Single process** - One deployment, one container
+- ✅ **Single database** - Easy SQL joins between modules
+- ✅ **Simple debugging** - All logs in one place
+- ✅ **Low operational complexity** - Perfect for solo developer
+- ✅ **Fast development** - Direct function calls, no HTTP overhead
+- ✅ **Cost-effective** - One backend instance (~$10-15/month)
+
+**Why NOT Microservices:**
+- ❌ Over-engineering for current scale
+- ❌ High operational complexity (4+ services, 4+ databases)
+- ❌ Network latency between services
+- ❌ Harder to debug distributed systems
+- ❌ Expensive hosting (~$40-80/month minimum)
+
+**Module Organization:**
+```
+quickstack-core/
+└── src/main/java/com/quickstack/core/
+    ├── auth/       # Infrastructure module
+    ├── user/       # Infrastructure module
+    ├── tenant/     # Infrastructure module
+    ├── gastos/     # Business module
+    ├── pedidos/    # Business module
+    ├── finanzas/   # Business module
+    └── webhooks/   # Integration module
+```
+
+### Automation - n8n
+
+**Decision**: Use n8n for workflow automation
+
+**Why n8n:**
+- ✅ Visual workflow builder (no code)
+- ✅ 400+ pre-built integrations
+- ✅ Self-hosted (full control)
+- ✅ Perfect for bots (Telegram, WhatsApp, Slack)
+- ✅ Scheduled tasks and webhooks
+- ✅ Integrates with ANY backend via HTTP (Java is fine)
+
+**n8n Use Cases:**
+- Telegram bot: "Gasto: 150 comida" → POST /webhooks/n8n/gastos
+- WhatsApp bot: Order notifications
+- Scheduled: Daily financial report generation
+- Integrations: Connect to external APIs (Stripe, email, etc.)
 
 ### Frontend - React + TypeScript + Vite
+
 **Why:**
 - ✅ Most popular framework (hiring advantage)
 - ✅ Type safety with TypeScript
@@ -96,69 +129,99 @@ This approach allows us to:
 - ✅ Rich ecosystem of components
 
 ### Database - PostgreSQL (Neon)
+
 **Why:**
 - ✅ Best open-source relational database
-- ✅ Excellent for multi-tenant (Row Level Security)
+- ✅ Excellent for multi-tenant (tenant_id filtering)
 - ✅ JSON support for flexibility
-- ✅ Neon provides managed hosting
+- ✅ Neon provides managed hosting with auto-scaling
 
 ### Infrastructure - Render + Vercel
+
 **Why:**
 - ✅ Simple deployment (no DevOps overhead)
-- ✅ Free tier for learning/prototyping
+- ✅ Free tier for prototyping
 - ✅ Auto-scaling built-in
 - ✅ Easy to understand and debug
 
-### Security Libraries - Bucket4j
-**Why:**
-- ✅ Industry-standard Token Bucket algorithm
-- ✅ Thread-safe in-memory rate limiting
-- ✅ Flexible configuration per endpoint
-- ✅ Can scale to Redis/Hazelcast for distributed systems
-- ✅ Modern API (no deprecated methods)
-
 ## 🎓 Key Architectural Decisions
 
-### 1. Multi-Repo Strategy (In Production)
-**Decision**: Each component is independent repo in production
-**Reason**:
-- Independent deployment and versioning
-- Clear ownership boundaries
-- Simplified CI/CD per component
+### 1. Monolith vs Microservices
 
-**Current Setup**: Monorepo for documentation (will split when implementing)
+**Decision**: Modular Monolith
 
-### 2. Shared Core Pattern
-**Decision**: All products authenticate through a central Core Backend
-**Reason**:
-- Don't repeat auth logic in every product
-- Centralized user/tenant management
-- Consistent security model
-- Single source of truth
+**Rationale**:
+- Solo developer cannot maintain 4+ microservices efficiently
+- Business modules are tightly coupled (finanzas needs gastos + pedidos data)
+- No need for independent scaling (all modules scale together)
+- Simpler deployment and debugging
 
-### 3. Database Per Product
-**Decision**: Each product has its own database
-**Reason**:
-- Data isolation (security)
-- Independent scaling
-- Schema flexibility per product
-- Easier backup/restore
+**When to Reconsider**: If we reach 10,000+ concurrent users or need to scale modules independently
+
+### 2. Single Database
+
+**Decision**: All modules share one PostgreSQL database
+
+**Rationale**:
+- Easy SQL joins (e.g., finanzas can JOIN gastos and pedidos)
+- Simpler migrations (one Flyway migration folder)
+- Lower cost (one database vs 4+)
+- Sufficient isolation via `tenant_id` column
+
+**Trade-off**: Cannot scale modules' databases independently (not a problem at current scale)
+
+### 3. Event-Driven Communication Between Modules
+
+**Decision**: Use Spring's `ApplicationEventPublisher` for inter-module communication
+
+**Rationale**:
+- Decouples modules (gastos doesn't import finanzas)
+- Easy to add new listeners without modifying existing code
+- Synchronous by default (simple), can be async if needed
+
+**Example**:
+```java
+// Gastos publishes event
+eventPublisher.publishEvent(new GastoRegistradoEvent(gasto));
+
+// Finanzas listens
+@EventListener
+public void onGastoRegistrado(GastoRegistradoEvent event) {
+    actualizarBalance(event.getGasto());
+}
+```
 
 ### 4. Multi-Tenant at Logical Level
+
 **Decision**: `tenant_id` column in all tables, not separate databases per tenant
-**Reason**:
+
+**Rationale**:
 - Cost-effective (one DB handles many tenants)
 - Easier maintenance
 - Sufficient for SMB/mid-market
 - Can migrate to physical isolation if needed
 
+**Security**: All queries include `WHERE tenant_id = ?` filter automatically
+
 ### 5. JWT Stateless Authentication
+
 **Decision**: JWT tokens, no sessions
-**Reason**:
+
+**Rationale**:
 - Scalable (no session store needed)
-- Works across services
+- Works across services (if we add a frontend separately)
 - Stateless = easier horizontal scaling
 - Standard industry practice
+
+### 6. n8n Integration via Webhooks
+
+**Decision**: n8n calls backend via HTTP, NOT Python execution
+
+**Rationale**:
+- Language-agnostic (Java backend works perfectly)
+- Clear separation of concerns (n8n = automation, backend = business logic)
+- Easier to debug (HTTP requests visible in logs)
+- More secure (no direct code execution)
 
 ## 🔒 Security Considerations
 
@@ -169,42 +232,35 @@ This approach allows us to:
    - Register: 3 attempts per hour
    - API: 100 requests per minute
    - Prevents brute force and DDoS attacks
-   - Implementation: `RateLimitService` + `RateLimitInterceptor`
 
 2. **CORS Configuration** ✅ - Environment-based whitelist
    - Development: localhost:3000, localhost:5173
    - Production: Configurable via `CORS_ALLOWED_ORIGINS`
    - Credentials enabled for HTTP-only cookies
-   - No wildcard (*) origins in production
-   - Implementation: `CorsConfig` + Spring Security integration
 
 3. **Security Headers** ✅ - 6 HTTP headers configured
-   - `X-Content-Type-Options: nosniff` - Prevents MIME sniffing
-   - `X-Frame-Options: DENY` - Prevents clickjacking
-   - `X-XSS-Protection: 1; mode=block` - XSS protection (legacy)
-   - `Strict-Transport-Security` - Forces HTTPS (HSTS)
-   - `Content-Security-Policy` - Restricts resource loading
-   - `Referrer-Policy: strict-origin-when-cross-origin` - Controls referer info
-   - Implementation: Spring Security `.headers()` configuration
+   - `X-Content-Type-Options: nosniff`
+   - `X-Frame-Options: DENY`
+   - `X-XSS-Protection: 1; mode=block`
+   - `Strict-Transport-Security` (HSTS)
+   - `Content-Security-Policy`
+   - `Referrer-Policy: strict-origin-when-cross-origin`
 
 4. **Input Validation** ✅ - Basic validation implemented
    - Bean Validation (`@Valid`, `@NotBlank`, `@Email`)
    - Password complexity requirements
-   - Email format validation
-   - Implementation: `@Valid` annotations + custom validators
 
-### Security Gaps (To Address in Future Sprints)
+### Security Roadmap (Future)
 
-1. **Token Storage** - Plan to use HTTP-Only cookies (not localStorage)
-2. **Audit Logs** - Essential for compliance and breach detection
-3. **Row Level Security** - PostgreSQL RLS for defense-in-depth
-4. **Enhanced Input Validation** - More comprehensive validation rules
-5. **Secret Management** - Use proper secret managers (not .env in production)
-6. **Dependency Scanning** - Automated vulnerability checks in CI/CD
-7. **Account Lockout** - Temporary lockout after failed attempts
-8. **Refresh Tokens** - Long-lived tokens for better UX
+**Sprint 2: Critical Security**
+- Audit Logging (track user actions)
+- Account Lockout (after failed login attempts)
+- Refresh Tokens (better UX)
 
-> Note: Security is addressed progressively. Core protections (Rate Limiting, CORS, Security Headers) are now in place.
+**Sprint 3: Advanced Security**
+- Two-Factor Authentication (2FA)
+- HTTP-Only Cookies (replace localStorage)
+- Row Level Security (PostgreSQL RLS)
 
 ## 📚 Documentation Structure
 
@@ -212,104 +268,121 @@ This approach allows us to:
 QuickStack/
 ├── README.md          # Architecture overview & system design
 ├── CONTEXT.md         # This file - project background & decisions (YOU ARE HERE)
-├── STRUCTURE.md       # Complete implementation blueprint
-├── PROJECT_GUIDE.md   # How to start implementing each component
-├── DEV_SETUP.md       # Development environment setup guide
+└── quickstack-core/
+    └── README.md      # Backend implementation guide
 ```
 
 **Read in this order:**
 1. CONTEXT.md (understand the "why")
 2. README.md (understand the "what")
-3. STRUCTURE.md (understand the "how")
-4. PROJECT_GUIDE.md (start implementing)
+3. quickstack-core/README.md (understand the "how")
 
 ## 🎯 Implementation Roadmap
 
-### Phase 1: Core Foundation (Critical Path)
-**Status**: 🔴 Not Started
+### Phase 1: Foundation ✅ COMPLETE
+- [x] Spring Boot + PostgreSQL setup
+- [x] Authentication & JWT
+- [x] User & Tenant management
+- [x] Security (Rate limiting, CORS, Headers)
+- [x] Database migrations (Flyway)
+- [x] 82 tests with 100% critical path coverage
+- [x] Production deployment (Render)
 
-1. **Core Backend** (Java + Spring Boot)
-   - Authentication endpoints
-   - JWT token generation/validation
-   - User CRUD
-   - Tenant management
-   - Database migrations (Flyway)
-   - **Estimated**: 2-3 weeks
-   - **Start**: `cd quickstack-core/`
+### Phase 2: Business Modules 🔄 IN PROGRESS
+**Focus**: Build core business features
 
-2. **Python SDK** (Python Package)
-   - HTTP client for Core APIs
-   - Token validation helpers
-   - Data models (User, Tenant)
-   - Error handling
-   - **Estimated**: 3-5 days
-   - **Start**: `cd quickstack-python-sdk/`
+**Gastos Module** (Expense Tracking)
+- [ ] Entity: `Gasto` (id, tenant_id, monto, categoria, descripcion, fecha)
+- [ ] Repository & Service
+- [ ] REST Controller (`/api/gastos`)
+- [ ] Flyway migration (V3__create_gastos.sql)
+- [ ] Tests
 
-3. **React UI Library** (React + TypeScript)
-   - Core components (Button, Modal, Form)
-   - Hooks (useAuth, useTenant)
-   - Theme system
-   - **Estimated**: 1-2 weeks
-   - **Start**: `cd quickstack-react-ui/`
+**Pedidos Module** (Order Management)
+- [ ] Entities: `Pedido`, `PedidoItem`
+- [ ] Repository & Service
+- [ ] REST Controller (`/api/pedidos`)
+- [ ] Flyway migration (V4__create_pedidos.sql)
+- [ ] Tests
 
-### Phase 2: Product Template
-**Status**: 🔴 Not Started
+**Finanzas Module** (Financial Statements)
+- [ ] Service to consume gastos + pedidos data
+- [ ] Generate financial statements (ingresos, egresos, balance)
+- [ ] REST Controller (`/api/finanzas/estado`)
+- [ ] Event listeners (listen to GastoRegistrado, PedidoCompletado)
+- [ ] Tests
 
-4. **Product Template** (FastAPI + React)
-   - Backend with multi-tenant models
-   - Frontend with authentication
-   - Docker Compose setup
-   - CI/CD pipelines
-   - **Estimated**: 1-2 weeks
-   - **Start**: `cd quickstack-product-template/`
+**Webhooks Module** (n8n Integration)
+- [ ] GastosWebhookController (`/webhooks/n8n/gastos`)
+- [ ] PedidosWebhookController (`/webhooks/n8n/pedidos`)
+- [ ] Webhook secret validation
+- [ ] Tests
 
-### Phase 3: Example Products
-**Status**: 🔴 Not Started
+**Estimated Time**: 2-3 weeks
 
-5. **CRM Example**
-6. **Analytics Example**
+### Phase 3: Automation 🔴 PLANNED
+**Focus**: n8n workflows and bots
+
+- [ ] Setup n8n (Docker or cloud)
+- [ ] Telegram bot workflow for expenses
+- [ ] WhatsApp bot workflow for orders
+- [ ] Scheduled financial report generation
+- [ ] Email notifications
+
+**Estimated Time**: 1-2 weeks
+
+### Phase 4: Dashboard 🔴 PLANNED
+**Focus**: Central React UI
+
+- [ ] React + TypeScript + Vite setup
+- [ ] Login/Register pages
+- [ ] Dashboard home
+- [ ] Gastos management page (list, create, edit)
+- [ ] Pedidos tracking page
+- [ ] Finanzas dashboard (charts, balance)
+- [ ] API client with Axios
+
+**Estimated Time**: 2-3 weeks
 
 ## 🚫 What NOT to Do
 
 ### Don't:
-- ❌ Copy-paste code you don't understand
-- ❌ Skip documentation/comments
-- ❌ Commit directly to main (use feature branches)
-- ❌ Implement features not in the plan (avoid scope creep)
-- ❌ Skip tests ("I'll add them later" = never)
+- ❌ Add microservices complexity (not needed)
+- ❌ Create separate databases per module (defeats the purpose)
+- ❌ Use Python for backend (already have Java foundation)
 - ❌ Over-engineer (YAGNI - You Ain't Gonna Need It)
+- ❌ Skip tests ("I'll add them later" = never)
 - ❌ Ignore linter warnings
 - ❌ Store secrets in code
 
 ### Do:
-- ✅ Read existing code before modifying
-- ✅ Write tests alongside features
-- ✅ Commit small, focused changes
-- ✅ Ask questions when unclear
+- ✅ Keep modules independent (loose coupling)
+- ✅ Write tests alongside features (TDD)
+- ✅ Use event bus for inter-module communication
 - ✅ Document complex logic
-- ✅ Follow the established patterns
+- ✅ Follow Spring Boot best practices
 - ✅ Run linters before committing
 - ✅ Update docs when code changes
 
 ## 💬 Common Questions
 
-### Q: Why not use a framework like Next.js for everything?
-**A**: Separation of concerns. Backend handles business logic (FastAPI), frontend handles UI (React). Next.js blurs this line.
+### Q: Why not use FastAPI for backend?
+**A**: We already have `quickstack-core` built in Java with auth, security, and multi-tenancy. Porting to Python wastes 2-3 weeks. Java integrates with n8n perfectly via HTTP/JSON.
 
-### Q: Why Java for Core? Python is easier.
-**A**: Core handles critical auth/security. Java's strong typing and mature ecosystem provide safety. Python is fine for product logic.
+### Q: Doesn't n8n work better with Python?
+**A**: No. n8n integrates via HTTP requests (language-agnostic). Java backend responds with JSON just like Python would. There's no difference for n8n.
 
 ### Q: Why not microservices?
-**A**: We're building a small-medium system. Microservices add complexity. Our "Core + Products" pattern gives benefits without the overhead.
+**A**: Solo developer can't maintain 4+ services. Our modules are tightly coupled (finanzas needs data from gastos + pedidos). Monolith with modules is simpler and faster.
 
-### Q: Why not serverless?
-**A**: Learning traditional deployment first. Serverless adds abstraction that hides important concepts. We can migrate later.
+### Q: Can I scale this later?
+**A**: Yes. If needed, we can extract modules into separate services. But start simple—premature optimization is the root of all evil.
 
-### Q: Do we need Docker for frontend?
-**A**: No. Frontend runs with `npm run dev` during development. Docker is for backend consistency only.
+### Q: Why one database?
+**A**: Simplicity. We can do SQL joins (e.g., `SELECT SUM(gastos), SUM(ingresos) FROM ...`). Lower cost. Easier migrations. Sufficient isolation with `tenant_id`.
 
-### Q: When do we deploy?
-**A**: After Core Backend is working. No point deploying empty directories.
+### Q: How do modules communicate?
+**A**: Via Spring's event bus (`ApplicationEventPublisher`). Example: Gastos publishes `GastoRegistradoEvent`, Finanzas listens and updates balance.
 
 ## 🔄 How to Resume Development
 
@@ -318,9 +391,8 @@ If you're starting fresh (after `/init` or coming back later):
 1. **Read this file** (CONTEXT.md) - Understand the "why"
 2. **Read README.md** - Understand the architecture
 3. **Check git log** - See what's been done
-4. **Run setup** - `./setup-dev-tools.sh`
-5. **Pick next task** - Follow roadmap in this file
-6. **Start implementing** - One component at a time
+4. **Check roadmap** - Pick next task from Phase 2
+5. **Start implementing** - One module at a time
 
 ## 📝 Notes for AI Assistant (Claude)
 
@@ -339,266 +411,88 @@ But you will NOT remember:
 ## 🎓 Learning Goals
 
 By the end of this project, we aim to understand:
-- ✅ Multi-tenant architecture patterns
-- ✅ Microservices communication (HTTP APIs)
+- ✅ Modular monolith architecture patterns
+- ✅ Multi-tenant architecture with logical isolation
+- ✅ Event-driven communication between modules
 - ✅ JWT authentication flow
-- ✅ Database migration strategies
+- ✅ n8n workflow automation
+- ✅ Database migration strategies (Flyway)
 - ✅ Docker containerization
 - ✅ CI/CD pipelines
 - ✅ Security best practices
-- ✅ System design at scale
+- ✅ System design for solo developers
 
-## 💡 Ideas de Features Futuras
+## 💡 Ideas for Future Features
 
-> Sección para documentar ideas que NO implementaremos ahora (YAGNI), pero queremos explorar en el futuro.
+> Section for documenting ideas we won't implement now (YAGNI), but want to explore later.
 
-### 1. Sistema de Entitlements (Feature Flags por Tenant)
+### 1. Advanced RBAC (Role-Based Access Control)
+**Date**: January 12, 2026
+**Status**: 📝 Documented, not implemented yet
 
-**Fecha**: Enero 8, 2026
-**Estado**: 📝 Documentado, no implementar aún
+**Problem**: Currently only ADMIN/USER roles, no granular permissions
 
-**Problema que resuelve**:
-Habilitar/deshabilitar productos y features por tenant. Ej: Tenant A tiene CRM + Analytics, Tenant B solo CRM.
+**Solution**: Add fine-grained permissions
+- ADMIN: full access
+- MANAGER: read/write users, no delete
+- USER: read-only
 
-**Modelo de datos propuesto**:
-```
-Product (code, name, active)
-Feature (code, name, product_id, active)
-TenantProduct (tenant_id, product_id, enabled, config)
-TenantFeature (tenant_id, feature_id, enabled, config)
-```
-
-**Fases de implementación**:
-1. **Fase 1 (Manual)**: Admin habilita/deshabilita manualmente por tenant
-2. **Fase 2 (Por Plan)**: Agregar tabla `Plan` y `PlanEntitlement` para automatizar según suscripción
-
-**Consumo**: Exponer via endpoint `GET /api/tenants/{id}/entitlements` o incluir en JWT.
-
-**Por qué NO ahora**: Aún no tenemos User/Tenant/Auth básico funcionando. Agregar complejidad prematura.
-
-**Cuándo implementar**: Después de tener MVP funcionando con al menos 2 productos.
+**When**: After MVP is complete and we have real users
 
 ---
 
-*Agregar nuevas ideas siguiendo este formato*
+### 2. Two-Factor Authentication (2FA)
+**Date**: January 12, 2026
+**Status**: 📝 Documented, not implemented yet
+
+**Problem**: Maximum security for sensitive accounts
+
+**Solution**: TOTP with Google Authenticator
+
+**When**: After we have audit logging and account lockout
 
 ---
 
-### 2. Features de Seguridad Pendientes (Post-MVP)
+### 3. API Gateway (Kong/AWS API Gateway)
+**Date**: January 12, 2026
+**Status**: 📝 Documented, not needed yet
 
-**Fecha**: Enero 10, 2026
-**Estado**: 📝 Documentado para implementar incremental
-**Contexto**: Core Backend desplegado en producción con autenticación JWT básica funcionando
+**Problem**: Centralized routing, rate limiting, analytics
 
-#### Sprint 1: Seguridad Crítica ✅ COMPLETADO (70% - 3 de 4 features)
+**Solution**: Add API Gateway in front of backend
 
-**1. Rate Limiting** ✅ IMPLEMENTADO
-- **Fecha**: Enero 10, 2026
-- **Estado**: Deployed to production
-- **Solución**: Bucket4j 8.10.1 con Token Bucket algorithm
-  - `/api/auth/login`: Max 5 intentos/15 min
-  - `/api/auth/register`: Max 3 intentos/hora
-  - `/api/**`: Max 100 requests/min
-- **Implementación**:
-  - `RateLimitService`: Gestión de buckets por IP
-  - `RateLimitInterceptor`: Interceptor HTTP con validación
-  - Soporte X-Forwarded-For para proxies
-  - 20 tests (100% cobertura)
-- **Tiempo real**: 3 horas (incluyendo tests y documentación)
-
-**2. CORS Configurado Correctamente** ✅ IMPLEMENTADO
-- **Fecha**: Enero 10, 2026
-- **Estado**: Deployed to production
-- **Solución**: Configuración environment-based
-  - Desarrollo: `localhost:3000`, `localhost:5173`
-  - Producción: Configurable vía `CORS_ALLOWED_ORIGINS`
-  - Credentials habilitados para cookies HTTP-only
-  - Métodos: GET, POST, PUT, DELETE, PATCH, OPTIONS
-  - Max-Age: 3600 segundos (cacheo preflight)
-- **Implementación**:
-  - `CorsConfig`: Bean con configuración CORS
-  - Integrado con Spring Security
-  - 8 tests de CORS (100% cobertura)
-- **Tiempo real**: 1.5 horas
-
-**3. Security Headers** ✅ IMPLEMENTADO
-- **Fecha**: Enero 10, 2026
-- **Estado**: Deployed to production
-- **Headers configurados**:
-  - `X-Content-Type-Options: nosniff`
-  - `X-Frame-Options: DENY`
-  - `X-XSS-Protection: 1; mode=block`
-  - `Strict-Transport-Security: max-age=31536000; includeSubDomains`
-  - `Content-Security-Policy: default-src 'self'; script-src 'self'; ...`
-  - `Referrer-Policy: strict-origin-when-cross-origin`
-- **Implementación**:
-  - Configuración directa en `SecurityConfig.headers()`
-  - 9 tests de security headers (100% cobertura)
-- **Tiempo real**: 1 hora
-
-**4. Audit Logs Básicos** ⏳ PENDIENTE
-- **Problema**: No hay visibilidad de quién hizo qué
-- **Solución**: Tabla `audit_logs` con eventos críticos
-- **Eventos**: Login exitoso/fallido, registro, cambios de contraseña
-- **Complejidad**: Baja (1-2 horas)
-- **Prioridad**: Siguiente en la lista
-
-**5. Account Lockout** ⏳ PENDIENTE
-- **Problema**: Cuentas comprometidas por intentos masivos
-- **Solución**: Bloqueo temporal después de N intentos fallidos
-  - 5 intentos → 15 min lockout
-  - 10 intentos → 24 horas lockout
-- **Modelo**: Columnas `failed_login_attempts`, `locked_until` en `users`
-- **Complejidad**: Baja (1 hora)
-
-#### Sprint 2: UX Esencial (1 semana)
-
-**5. Refresh Tokens** ⭐
-- **Problema**: Access tokens expiran en 1 hora, usuario debe re-autenticarse
-- **Solución**: Access token corto (15 min) + Refresh token largo (7 días)
-- **Endpoints**: `POST /api/auth/refresh`
-- **Modelo**: Tabla `refresh_tokens`
-- **Complejidad**: Media (2-3 horas)
-
-**6. Password Reset** ⭐⭐⭐
-- **Problema**: Usuarios olvidan contraseñas
-- **Solución**: Flujo forgot password → email → reset con token
-- **Endpoints**: `POST /api/auth/forgot-password`, `POST /api/auth/reset-password`
-- **Modelo**: Tabla `password_reset_tokens` (expiran en 1 hora)
-- **Complejidad**: Media (2-3 horas + integración email)
-
-**7. Email Verification** ⭐⭐
-- **Problema**: Validar emails reales, prevenir spam
-- **Solución**: Email con link → click → cuenta activa
-- **Modelo**: Columna `email_verified` en `users`
-- **Endpoints**: `GET /api/auth/verify-email?token=...`
-- **Complejidad**: Media (3-4 horas con SendGrid/Mailgun)
-
-**8. User Management CRUD Completo**
-- **Endpoints faltantes**:
-  - `POST /api/users` - Admin crea usuarios USER
-  - `PATCH /api/users/{id}` - Actualizar nombre, email, role
-  - `DELETE /api/users/{id}` - Soft delete (active=false)
-  - `POST /api/users/{id}/activate` - Reactivar
-- **Complejidad**: Baja (2-3 horas con tests)
-
-#### Sprint 3: Features Avanzadas (1-2 semanas)
-
-**9. RBAC Mejorado (Role-Based Access Control)** ⭐⭐
-- **Problema**: Solo ADMIN/USER, sin granularidad
-- **Solución**: Más roles y permisos específicos
-  - ADMIN: full access
-  - MANAGER: read/write users, no delete
-  - USER: solo lectura
-- **Implementación**: `@PreAuthorize` annotations
-- **Complejidad**: Media (3-4 horas)
-
-**10. Two-Factor Authentication (2FA)** ⭐⭐⭐
-- **Problema**: Máxima seguridad requerida
-- **Solución**: TOTP con Google Authenticator
-- **Flujo**: Login → QR code → código 6 dígitos → validación
-- **Librería**: `java-totp`
-- **Complejidad**: Alta (4-6 horas)
-
-**11. HTTP-Only Cookies para JWT** ⭐⭐⭐
-- **Problema**: localStorage vulnerable a XSS
-- **Solución**: Cookies HTTP-only + Secure + SameSite
-- **Impacto**: Requiere cambios en frontend
-- **Complejidad**: Media (2-3 horas backend + frontend)
-
-**12. Tenant Management**
-- **Endpoints**:
-  - `GET /api/tenants/me` - Info del tenant autenticado
-  - `PATCH /api/tenants/{id}` - Actualizar nombre, settings
-  - `GET /api/tenants/stats` - Estadísticas (# usuarios, fecha creación)
-- **Complejidad**: Baja (1-2 horas)
-
-#### Monitoring & Observability
-
-**13. Metrics con Micrometer + Prometheus**
-- **Métricas**: Requests/endpoint, latencia, errores 4xx/5xx, conexiones DB
-- **Stack**: Micrometer → Prometheus → Grafana
-- **Complejidad**: Media (2-3 horas setup)
-
-**14. Structured Logging (JSON)**
-- **Formato**: JSON logs con trace_id, user_id, tenant_id
-- **Librería**: Logback JSON encoder
-- **Complejidad**: Baja (1 hora)
-
-**15. Health Checks Detallados**
-- **Actual**: Solo UP/DOWN
-- **Mejorado**: Checks por componente (DB, disk, latencia Neon)
-- **Complejidad**: Baja (30 min)
-
-#### Orden de Implementación Propuesto
-
-**Prioridad 1 (Seguridad Crítica):**
-1. Rate Limiting
-2. Account Lockout
-3. CORS
-4. Audit Logs
-
-**Prioridad 2 (UX):**
-5. Refresh Tokens
-6. Password Reset
-7. Email Verification
-8. User Management CRUD
-
-**Prioridad 3 (Avanzado):**
-9. RBAC Mejorado
-10. 2FA
-11. HTTP-Only Cookies
-12. Metrics + Monitoring
-
-**Por qué este orden**: Seguridad primero (prevenir ataques reales), luego UX (usuarios pueden usar el sistema), finalmente features avanzadas.
-
-**Cuándo implementar**: Después de tener al menos 1 producto funcionando con el Core actual.
+**When**: If we reach 10,000+ concurrent users or need advanced routing
 
 ---
 
 ## 📅 Timeline
 
 - **Started**: January 8, 2026
-- **Phase 1 Complete**: January 8, 2026 (Architecture & Setup)
-- **Phase 2 Start**: January 10, 2026 (Core Backend implementation)
-- **Phase 2 Complete**: January 10, 2026 (Core Backend MVP deployed to production)
-- **Sprint 1 Security**: January 10, 2026 (70% complete - Rate Limiting, CORS, Security Headers)
-- **MVP Target**: ✅ ACHIEVED - Core Backend en producción con JWT auth + seguridad básica
-- **Next**: Audit Logging, Account Lockout, luego Sprint 2 (UX features)
+- **Phase 1 Complete**: January 10, 2026 (Foundation deployed to production)
+- **Phase 2 Start**: January 12, 2026 (Business modules)
+- **MVP Target**: February 2026 (Backend + n8n + Dashboard)
 
 ---
 
-**Last Updated**: January 10, 2026 (22:45 CST)
+**Last Updated**: January 12, 2026
 
-**Current Phase**: Sprint 1 - Security Critical ✅ 70% COMPLETE (3/4 features)
-
-**Production Status**:
-- ✅ Core Backend deployed (Render)
-- ✅ Rate Limiting active (Bucket4j)
-- ✅ CORS configured (environment-based)
-- ✅ Security Headers active (6 headers)
-- ✅ 82 tests passing (100% critical path)
+**Current Phase**: Phase 2 - Business Modules (Gastos, Pedidos, Finanzas)
 
 **Next Tasks**:
-1. Audit Logging (Sprint 1 - remaining 30%)
-2. Account Lockout (Sprint 1 - bonus)
-3. Refresh Tokens (Sprint 2 - UX)
-4. Password Reset (Sprint 2 - UX)
+1. Create Gastos module (expense tracking)
+2. Create Pedidos module (order management)
+3. Create Finanzas module (financial statements)
+4. Add webhook endpoints for n8n integration
 
-**Technical Achievements**:
-- Test-Driven Development (TDD) workflow established
-- Modern Bucket4j API (no deprecations)
-- Comprehensive security headers (OWASP best practices)
-- Environment-based CORS (production-ready)
-- Thread-safe rate limiting (concurrent requests)
+**Technical Stack**:
+- Backend: Java 17 + Spring Boot 3.5
+- Database: PostgreSQL (Neon)
+- Frontend: React 18 + TypeScript + Vite (planned)
+- Automation: n8n (planned)
+- Deployment: Render (backend), Vercel (frontend planned)
 
 ---
 
-**Remember**: This is a learning journey. Take time to understand, not just implement. Quality over speed. 🚀
+**Remember**: This is a learning journey optimized for a solo developer. Simplicity and maintainability over premature optimization. 🚀
 
-**Lessons Learned**:
-1. TDD catches bugs early (write tests first, then implementation)
-2. Spring Security headers require careful configuration (HSTS only on HTTPS)
-3. Bucket4j Token Bucket is elegant and powerful
-4. CORS preflight caching saves round trips (3600s max-age)
-5. Security is incremental - focus on critical features first
+**Philosophy**: Build modular, deploy monolithic. Start simple, scale when proven necessary.
