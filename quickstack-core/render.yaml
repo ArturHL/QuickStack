@@ -1,0 +1,59 @@
+# ============================================
+# Render Blueprint para QuickStack Core Backend
+# ============================================
+# Este archivo define la infraestructura en Render
+# Docs: https://render.com/docs/blueprint-spec
+
+services:
+  # Backend Spring Boot
+  - type: web
+    name: quickstack-core-api
+    runtime: docker
+    region: oregon
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+
+    # Variables de entorno
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+
+      - key: DATABASE_URL
+        fromDatabase:
+          name: quickstack-db
+          property: connectionString
+
+      - key: DATABASE_USERNAME
+        fromDatabase:
+          name: quickstack-db
+          property: user
+
+      - key: DATABASE_PASSWORD
+        fromDatabase:
+          name: quickstack-db
+          property: password
+
+      - key: JWT_SECRET
+        generateValue: true  # Render genera automáticamente
+        sync: false
+
+      - key: JWT_EXPIRATION_MS
+        value: 3600000  # 1 hora
+
+      - key: JAVA_OPTS
+        value: -Xmx512m -Xms256m
+
+    # Health check
+    healthCheckPath: /actuator/health
+
+    # Auto-deploy en push a main
+    autoDeploy: true
+
+# Base de datos PostgreSQL (si usas Render, no Neon)
+# Comenta esta sección si usas Neon
+# databases:
+#   - name: quickstack-db
+#     databaseName: quickstack_prod
+#     plan: starter # free, starter, standard, pro
+#     region: oregon
